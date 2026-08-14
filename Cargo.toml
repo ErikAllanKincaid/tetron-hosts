@@ -1,0 +1,38 @@
+[package]
+name = "tetron-hosts"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91"
+license = "MPL-2.0"
+description = "Syncs tetron peer hostnames into /etc/hosts (<hostname>.<network>) -- no DNS server, no port 53"
+repository = "https://github.com/ErikAllanKincaid/tetron-hosts"
+
+[[bin]]
+name = "tetron-hosts"
+path = "src/main.rs"
+
+[dependencies]
+# Floating on tetron's main branch, not a pinned tag -- same reasoning as
+# tetron-webui/tetron-systray's own Cargo.toml: the real compatibility
+# risk is which *binaries* are running together, and tetron-proto's wire
+# types already use #[serde(default)] consistently for exactly that reason.
+tetron-proto = { git = "https://github.com/ErikAllanKincaid/tetron" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+toml = "1.1"
+# Locating the LaunchDaemon dir on macOS follows the same shape core/webui/
+# systray's own service.rs use, even though this crate's actual config/unit
+# paths are root-owned system paths, not per-user ones.
+dirs = "6.0.0"
+# Root check at `install`/`sync` entry, same as tetron core's own
+# check_root() (src/main.rs).
+libc = "0.2"
+
+[dev-dependencies]
+# Only needed to construct a fake EndpointId in sync.rs's own unit tests
+# (NetworkStatus/PeerStatus carry tetron-proto's iroh::EndpointId type
+# directly) -- version left unpinned so Cargo's resolver unifies it with
+# whatever tetron-proto itself pulls in.
+iroh = "1"

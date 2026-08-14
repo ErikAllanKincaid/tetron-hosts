@@ -1,0 +1,7 @@
+[Unit]
+Description=tetron-hosts: sync peer hostnames into /etc/hosts (one-shot, triggered by tetron-hosts.timer)
+After=tetron.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/tetron-hosts sync

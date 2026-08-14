@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodically run tetron-hosts sync
+
+[Timer]
+OnBootSec=60s
+OnUnitActiveSec=__INTERVAL_SECS__s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
